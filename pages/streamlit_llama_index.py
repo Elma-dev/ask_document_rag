@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional
 from pathlib import Path
 import nest_asyncio
@@ -10,6 +11,8 @@ from llama_index.core import Document, VectorStoreIndex, SimpleDirectoryReader, 
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.vector_stores.postgres import PGVectorStore
 from llama_index.llms.ollama import Ollama
+from llama_index.llms.cohere import Cohere
+from llama_index.embeddings.cohere import CohereEmbedding
 
 
 # @st.cache_resource
@@ -42,6 +45,10 @@ def define_global_settings(setting: str, value: str):
         Settings.llm = value
     elif setting == "embed_model":
         Settings.embed_model = value
+    elif setting=="chunks_size":
+        Settings.chunk_size=value
+
+
 
 
 @st.cache_resource(show_spinner=False)
@@ -49,14 +56,16 @@ def query_engine_from_doc(documents: [str]):
     # load_documents
     doc = read_file_to_doc(documents)
     # create embedding
-    embed_mod = HuggingFaceEmbedding("sentence-transformers/all-mpnet-base-v2")
+        #embed_mod = HuggingFaceEmbedding("sentence-transformers/all-mpnet-base-v2")
+    cohere_embed=CohereEmbedding(cohere_api_key="2DNlMKIjntYyI9fflsvWJ9Nqn0cfZSyZUV92J2o6")
     # create our llm mistral from ollama
-    llm = Ollama(model="mistral", base_url="https://b043-104-196-20-41.ngrok-free.app")
+     #   llm = Ollama(model="mistral", base_url="https://b043-104-196-20-41.ngrok-free.app")
+    cohere_llm=Cohere(api_key="2DNlMKIjntYyI9fflsvWJ9Nqn0cfZSyZUV92J2o6")
     # set Settings
-    define_global_settings("llm", llm)
-    define_global_settings("embed_model", embed_mod)
+    define_global_settings("llm", cohere_llm)
+    define_global_settings("embed_model", cohere_embed)
     # create storage context
-    pgvectore_store_context = create_storage_context(db_name="rag_db", table="test_table", embed_dim=768)
+    pgvectore_store_context = create_storage_context(db_name="rag_db", table="test_table2", embed_dim=1024)
     # document to vector store
     vect_stor = to_vector_store_index([doc], pgvectore_store_context)
     # query engine
