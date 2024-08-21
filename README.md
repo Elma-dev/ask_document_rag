@@ -45,15 +45,17 @@ The architecture is split into several key components:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/
+   git clone https://github.com/Elma-dev/ask_document_rag.git
    cd ask-document-rag```
 2. **Install Dependencies**
-   ```pip install -r requirements.txt```
+   ```
+   pip install -r requirements.txt
+   ```
 4. **Setup Ngrok for Colab Machine**
 5. **Run the Application**
-```
-streamlit run app.py
-```
+   ```
+   streamlit run app.py
+   ```
 ## Usage
 **Upload Document:** Use the Streamlit interface to upload documents that you want to query.
 
